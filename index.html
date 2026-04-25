@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+    color: white;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+}
+
+.btn-add {
+    background-color: #667eea;
+}
+
+.btn-add:hover {
+    background-color: #764ba2;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-clear {
+    background-color: #ff6b6b;
+    width: 100%;
+}
+
+.btn-clear:hover {
+    background-color: #ff5252;
+    transform: translateY(-2px);
+}
+
+ul {
+    list-style: none;
+    margin-top: 20px;
+}
+
+li {
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s;
+}
+
+li:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
+
+.delete-btn {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #ff5252;
+    transform: scale(1.1);
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+    font-size: 16px;
+}
+
+@media (max-width:480px) {
+    h1 {
+        font-size: 28px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    input[type="text"] {
+        width: 100%;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>✅ To Do List</h1>
+
+<div class="container">
+    <div class="card">
+        <div class="input-group">
+            <input type="text" id="task" placeholder="أضيف مهمة جديدة...">
+            <button class="btn-add" onclick="ajouttache()">إضافة</button>
+        </div>
+        
+        <ul id="liste"></ul>
+        
+        <div id="emptyMessage" class="empty-message">لا توجد مهام 📝</div>
+        
+        <button class="btn-clear" onclick="suptache()">حذف الكل</button>
+    </div>
+</div>
+
+<script>
+let tache = [];
+
+// تحميل المهام من الذاكرة
+function chargerTaches() {
+    const saved = localStorage.getItem('taches');
+    if (saved) {
+        tache = JSON.parse(saved);
+        afficherTaches();
+    }
+}
+
+// حفظ المهام في الذاكرة
+function sauvegarderTaches() {
+    localStorage.setItem('taches', JSON.stringify(tache));
+}
+
+// إضافة مهمة جديدة
+function ajouttache() {
+    let newTask = document.getElementById("task").value.trim();
+    
+    if (newTask === "") {
+        alert("الرجاء إدخال مهمة!");
+        return;
+    }
+    
+    tache.push(newTask);
+    sauvegarderTaches();
+    document.getElementById("task").value = "";
+    afficherTaches();
+}
+
+// حذف مهمة واحدة
+function supprimerTache(index) {
+    tache.splice(index, 1);
+    sauvegarderTaches();
+    afficherTaches();
+}
+
+// عرض جميع المهام
+function afficherTaches() {
+    let liste = document.getElementById("liste");
+    liste.innerHTML = "";
+    
+    if (tache.length === 0) {
+        document.getElementById("emptyMessage").style.display = "block";
+    } else {
+        document.getElementById("emptyMessage").style.display = "none";
+        
+        tache.forEach((task, index) => {
+            let li = document.createElement("li");
+            li.innerHTML = `
+                <span>${task}</span>
+                <button class="delete-btn" onclick="supprimerTache(${index})">حذف</button>
+            `;
+            liste.appendChild(li);
+        });
+    }
+}
+
+// حذف جميع المهام
+function suptache() {
+    if (tache.length === 0) {
+        alert("لا توجد مهام لحذفها!");
+        return;
+    }
+    
+    if (confirm("هل أنت متأكد من حذف جميع المهام؟")) {
+        tache = [];
+        sauvegarderTaches();
+        afficherTaches();
+    }
+}
+
+// اضغط Enter لإضافة مهمة
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("task").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            ajouttache();
+        }
+    });
+    
+    chargerTaches();
+});
+</script>
+
+</body>
+</html>
