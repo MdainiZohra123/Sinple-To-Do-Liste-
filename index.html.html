@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@media (max-width:768px) {
+    body{
+        background: blue;
+        padding: 0;
+    }
+}
+
+h1{
+    text-align: center;
+    font-size: 40px;
+}
+
+.card{
+    background-color: pink;
+    border-radius: 20px;
+    font-size: 19px;
+    padding:20px;
+}
+
+button{
+    background-color: gray;
+    color: white;
+    padding:10px;
+    margin:5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Hi !! To Do List</h1>
+
+<div class="card">
+    <input type="text" id="task">
+    <button onclick="ajouttache()">Ajouter</button>
+    <button onclick="suptache()">Sup Tout</button>
+
+    <ul id="liste"></ul>
+</div>
+
+<script>
+let tache = [];
+
+function ajouttache() {
+    let newTask = document.getElementById("task").value;
+
+    tache.push(newTask);
+
+    document.getElementById("liste").innerHTML += "<li>" + newTask + "</li>";
+
+    document.getElementById("task").value = "";
+}
+
+function suptache() {
+    tache = [];
+    document.getElementById("liste").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
